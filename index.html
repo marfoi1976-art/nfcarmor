@@ -1,16 +1,155 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Secure NFC Transaction Software</title>
-    <meta property="og:image" content="https://bolt.new/static/og_default.png">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:image" content="https://bolt.new/static/og_default.png">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NFC Armor — Instant Tag Scanner & Analyzer</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root {
+      --accent: #00ff9d;
+      --bg: #0f0f1b;
+      --card: #1a1a2e;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, sans-serif;
+      background: var(--bg);
+      color: white;
+      text-align: center;
+      padding: 2rem 1rem;
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      margin: 0;
+      background: linear-gradient(90deg, #00ff9d, #00b8ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .tagline {
+      font-size: 1.3rem;
+      opacity: 0.9;
+      margin: 1rem 0 2rem;
+    }
+
+    .scan-btn {
+      background: var(--accent);
+      color: #000;
+      font-weight: bold;
+      font-size: 2rem;
+      padding: 1.5rem 3rem;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      box-shadow: 0 10px 30px rgba(0, 255, 157, 0.4);
+      transition: 0.3s;
+    }
+
+    .scan-btn:hover {
+      transform: scale(1.05);
+    }
+
+    .results {
+      margin-top: 3rem;
+      padding: 2rem;
+      background: var(--card);
+      border-radius: 16px;
+      text-align: left;
+      display: none;
+    }
+
+    pre {
+      background: #000;
+      padding: 1rem;
+      border-radius: 8px;
+      overflow-x: auto;
+    }
+
+    .copy {
+      background: var(--accent);
+      color: #000;
+      border: none;
+      padding: 0.5rem 1rem;
+      margin: 0.5rem;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    footer {
+      margin-top: 4rem;
+      opacity: 0.6;
+      font-size: 0.9rem;
+    }
+  </style>
 </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
-</html>
+
+<body>
+
+  <h1>🛡️ NFC Armor</h1>
+  <p class="tagline">The most powerful free NFC tag reader in your browser.<br>No app required — just tap.</p>
+
+  <button id="start" class="scan-btn">
+    <i class="fas fa-mobile-alt"></i> TAP YOUR TAG NOW
+  </button>
+
+  <div id="results" class="results">
+    <h2>Scan Results</h2>
+    <p><strong>Status:</strong> <span id="status">Ready</span></p>
+    <pre id="raw"></pre>
+    <button class="copy" onclick="copy('#raw')">Copy Raw Hex</button>
+    <button class="copy" onclick="downloadJSON()">Download JSON</button>
+    <button class="copy" onclick="copyText(resultsJSON)">Copy Full JSON</button>
+  </div>
+
+  <footer>
+    100% client-side • Open source • No tracking • Made by WarlockSecLabs
+  </footer>
+
+  <script>
+    let resultsJSON = "";
+  document.getElementById("start").addEventListener("click", async () => {
+    if (!("NDEFReader" in window)) {
+      alert("Web NFC not supported yet. Use Chrome 89+ on Android.");
+      return;
+    }
+    try {
+      const ndef = new NDEFReader();
+      document.getElementById("status").textContent = "Scanning… hold tag to the back of your phone";
+      await ndef.scan();
+      ndef.onreading = ({ message, serialNumber }) => {
+        const records = message.records;
+        resultsJSON = JSON.stringify({serialNumber, records}, null, 2);
+        let pretty = "";
+        records.forEach(r => {
+          const decoder = new TextDecoder(r.encoding || "utf-8");
+          pretty += `Type: ${r.recordType}\n`;
+          pretty += `MIME: ${r.mediaType || "N/A"}\n`;
+          if (r.data) pretty += `Data: ${decoder.decode(r.data)}\n\n`;
+        });
+        document.getElementById("raw").textContent = pretty + "\nFull JSON ↓\n" + resultsJSON;
+        document.getElementById("results").style.display = "block";
+        document.getElementById("status").textContent = "Tag read successfully!";
+      };
+    } catch (e) { alert("Error: " + e); }
+  });
+
+  function copy(selector) {
+    navigator.clipboard.writeText(document.querySelector(selector).textContent);
+    alert("Copied!");
+  }
+  function copyText(text) {
+    navigator.clipboard.writeText(text);
+    alert("JSON copied!");
+  }
+  function downloadJSON() {
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([resultsJSON], {type:"application/json"}));
+    a.download = "nfcarmor-scan.json";
+    a.click();
+  }
+  </script>
+</body>
