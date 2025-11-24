@@ -1,92 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>NFC Armor — Instant Tag Scanner & Analyzer</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
-    :root {
-      --accent: #00ff9d;
-      --bg: #0f0f1b;
-      --card: #1a1a2e;
-    }
-
-    body {
-      margin: 0;
-      font-family: system-ui, sans-serif;
-      background: var(--bg);
-      color: white;
-      text-align: center;
-      padding: 2rem 1rem;
-    }
-
-    h1 {
-      font-size: 2.8rem;
-      margin: 0;
-      background: linear-gradient(90deg, #00ff9d, #00b8ff);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .tagline {
-      font-size: 1.3rem;
-      opacity: 0.9;
-      margin: 1rem 0 2rem;
-    }
-
-    .scan-btn {
-      background: var(--accent);
-      color: #000;
-      font-weight: bold;
-      font-size: 2rem;
-      padding: 1.5rem 3rem;
-      border: none;
-      border-radius: 20px;
-      cursor: pointer;
-      box-shadow: 0 10px 30px rgba(0, 255, 157, 0.4);
-      transition: 0.3s;
-    }
-
-    .scan-btn:hover {
-      transform: scale(1.05);
-    }
-
-    .results {
-      margin-top: 3rem;
-      padding: 2rem;
-      background: var(--card);
-      border-radius: 16px;
-      text-align: left;
-      display: none;
-    }
-
-    pre {
-      background: #000;
-      padding: 1rem;
-      border-radius: 8px;
-      overflow-x: auto;
-    }
-
-    .copy {
-      background: var(--accent);
-      color: #000;
-      border: none;
-      padding: 0.5rem 1rem;
-      margin: 0.5rem;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
-    footer {
-      margin-top: 4rem;
-      opacity: 0.6;
-      font-size: 0.9rem;
-    }
+    :root { --accent: #00ff9d; --bg: #0f0f1b; --card: #1a1a2e; }
+    body { margin:0; font-family: system-ui, sans-serif; background: var(--bg); color: white; text-align:center; padding: 2rem 1rem; }
+    h1 { font-size: 2.8rem; margin:0; background: linear-gradient(90deg, #00ff9d, #00b8ff); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+    .tagline { font-size:1.3rem; opacity:0.9; margin:1rem 0 2rem; }
+    .scan-btn { background:var(--accent); color:#000; font-weight:bold; font-size:2rem; padding:1.5rem 3rem; border:none; border-radius:20px; cursor:pointer; box-shadow:0 10px 30px rgba(0,255,157,0.4); transition:0.3s; }
+    .scan-btn:hover { transform:scale(1.05); }
+    .results { margin-top:3rem; padding:2rem; background:var(--card); border-radius:16px; text-align:left; display:none; }
+    pre { background:#000; padding:1rem; border-radius:8px; overflow-x:auto; }
+    .copy { background:var(--accent); color:#000; border:none; padding:0.5rem 1rem; margin:0.5rem; border-radius:8px; cursor:pointer; }
+    footer { margin-top:4rem; opacity:0.6; font-size:0.9rem; }
   </style>
 </head>
-
 <body>
 
   <h1>🛡️ NFC Armor</h1>
@@ -109,8 +40,8 @@
     100% client-side • Open source • No tracking • Made by WarlockSecLabs
   </footer>
 
-  <script>
-    let resultsJSON = "";
+<script>
+  let resultsJSON = "";
   document.getElementById("start").addEventListener("click", async () => {
     if (!("NDEFReader" in window)) {
       alert("Web NFC not supported yet. Use Chrome 89+ on Android.");
@@ -151,5 +82,7 @@
     a.download = "nfcarmor-scan.json";
     a.click();
   }
-  </script>
+</script>
+</body>
+</html>
 </body>
